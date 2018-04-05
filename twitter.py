@@ -4,15 +4,17 @@ import matplotlib.pyplot as plt
 from tweepy import OAuthHandler
 from os import path
 from wordcloud import WordCloud
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
 
 def main():
     usrinp = int(input("1. Get data, 2. Crime Word Cloud, :"))
     if usrinp == 1:
-        consumer_key = 'isi ini'
-        consumer_secret = 'isi ini'
-        access_token = 'isi ini'
-        access_secret = 'isi ini'
+        consumer_key = 'fLnf3WIuilQI8XDAy36L4HCXp'
+        consumer_secret = 'Qi2rtmYVSm1t6ATC7J4McALCHgXHGLUnWgoHHBvU4q9JQraiCv'
+        access_token = '255792021-VQMmhleyYXcLGXXFXcf3cGwkM0FCKOKpwBpxe6fb'
+        access_secret = '1RpbrPaaSd92x8dNt0wupVNx0MsyGqSxsfqRmIu44XcSN'
         
         auth = OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_secret)
@@ -20,7 +22,7 @@ def main():
         api = tweepy.API(auth)
 
         portal = ['detikcom', 'kompascom', 'CNNIndonesia', 'Metro_TV', 'Beritasatu', 'liputan6dotcom', 'SINDOnews', ]
-        crime_text = ['begal', 'hacker', 'korupsi', 'penipuan', 'koruptor', 'komplotan', 'tewas', 'pelecehan', 'digrebek', 'curi', 'ditembak', 'pencuri', 'lapor', 'sabu', 'ganja', 'narkoba']
+        crime_text = ['begal', 'hacker', 'korupsi', 'tipu', 'koruptor', 'tewas', 'leceh', 'seksual', 'curi', 'tembak', 'curi', 'sabu', 'ganja', 'narkoba']
 
         text_file = open('tweets.txt', 'w')
 
@@ -38,13 +40,24 @@ def main():
 
     elif usrinp == 2:        
         # wc_text_file = open('tweets.txt').readlines()
-        wc_text_file = open('crime_news.txt').read()
-        wc = WordCloud().generate(wc_text_file)
+        wc_text_file = open('crime_news.txt').readlines()
+        factory_stem = StemmerFactory()
+        stemmer = factory_stem.create_stemmer()
+        
+        factory_stop = StopWordRemoverFactory()
+        stopword = factory_stop.create_stop_word_remover()
+        
+        for i in wc_text_file:
+            output_stem = stemmer.stem(i)
+            output_stop = stopword.remove(output_stem)
 
-        plt.imshow(wc, interpolation='bilinear')
-        plt.axis("off")
+            print(output_stop)
+        # wc = WordCloud().generate(output_stop)
 
-        plt.show()
+        # plt.imshow(wc, interpolation='bilinear')
+        # plt.axis("off")
+
+        # plt.show()
 
 if __name__ == '__main__':
     main()
